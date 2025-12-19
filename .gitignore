@@ -31,11 +31,6 @@ public/api/
 api/
 *.php
 
-# =========================
-# Large media (recommended)
-# =========================
-public/backgrounds/*.mp4
-public/backgrounds/*.webm
 
 # =========================
 # Editor / OS files
