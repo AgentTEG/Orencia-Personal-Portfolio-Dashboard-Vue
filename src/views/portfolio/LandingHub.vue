@@ -9,7 +9,7 @@
       playsinline
       preload="auto"
     >
-      <source src="/backgrounds/pages-dash-bg.mp4" type="video/mp4" />
+      <source :src="bgVideo" type="video/mp4" />
     </video>
 
     <!-- 🌫️ OVERLAY -->
@@ -49,35 +49,43 @@
 </template>
 
 <script>
+import bgVideo from "@/backgrounds/pages-dash-bg.mp4";
+
+import profileIcon from "@/icons/profile.png";
+import showcaseIcon from "@/icons/showcase.png";
+import contactIcon from "@/icons/contact.png";
+import creativeIcon from "@/icons/creative.png";
+
 export default {
   name: "LandingHub",
   data() {
     return {
       transitioning: false,
+      bgVideo,
       pages: [
         {
           title: "Profile",
           desc: "My personal information, resume, background, and professional overview.",
           route: "/portfolio/dashboard/profile",
-          icon: "/icons/profile.png"
+          icon: profileIcon
         },
         {
           title: "Showcase",
           desc: "My highlighted projects, demos, and featured technical works.",
           route: "/portfolio/dashboard/showcase",
-          icon: "/icons/showcase.png"
+          icon: showcaseIcon
         },
         {
           title: "Contact",
-          desc: "Ways to connect, reach out, and communicate with me. Leave a message for me aswell",
+          desc: "Ways to connect, reach out, and communicate with me. Leave a message as well.",
           route: "/portfolio/dashboard/contact",
-          icon: "/icons/contact.png"
+          icon: contactIcon
         },
         {
           title: "Creative",
-          desc: "The Proffesional Tools and Skills I possess.",
+          desc: "The professional tools and skills I possess.",
           route: "/portfolio/dashboard/creative",
-          icon: "/icons/creative.png"
+          icon: creativeIcon
         }
       ]
     };
@@ -93,7 +101,6 @@ export default {
 };
 </script>
 
-<!-- ❗ NOT SCOPED — REQUIRED FOR VIDEO BACKGROUND -->
 <style>
 /* ===== ROOT ===== */
 .hub-app {
@@ -158,22 +165,21 @@ export default {
   justify-content: center;
 }
 
-/* ===== CARD (ALIGNMENT FIX HERE) ===== */
+/* ===== CARD ===== */
 .card-wrapper {
-  width: 300px;               /* 🔑 SAME WIDTH AS DESCRIPTION */
+  width: 300px;
   display: flex;
   flex-direction: column;
-  align-items: center;        /* 🔑 SHARED CENTER AXIS */
+  align-items: center;
   cursor: pointer;
 }
 
-/* ===== LABEL ABOVE ===== */
+/* ===== LABEL ===== */
 .card-label {
   margin-bottom: 14px;
   font-size: 18px;
   font-weight: 600;
   color: #e5e7eb;
-  text-align: center;
 }
 
 /* ===== BUBBLE ===== */
@@ -201,7 +207,7 @@ export default {
   box-shadow: 0 0 40px rgba(160, 220, 140, 0.6);
 }
 
-/* ===== DESCRIPTION (ALIGNED & STABLE) ===== */
+/* ===== DESCRIPTION ===== */
 .card-desc {
   margin-top: 18px;
   width: 100%;
@@ -224,7 +230,7 @@ export default {
   transform: translateY(0);
 }
 
-/* ===== FOG TRANSITION ===== */
+/* ===== FOG ===== */
 .fog {
   position: fixed;
   inset: 0;
