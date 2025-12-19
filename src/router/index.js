@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from "vue-router";
+import { createRouter, createWebHashHistory } from "vue-router";
 
 import Login from "../views/Login.vue";
 import Register from "../views/Register.vue";
@@ -21,7 +21,7 @@ const routes = [
   {
     path: "/portfolio",
     component: LandingHub,
-    meta: { requiresAuth: true }
+    meta: { requiresAuth: true },
   },
 
   /* 📊 DASHBOARD */
@@ -33,14 +33,14 @@ const routes = [
       { path: "profile", component: Profile },
       { path: "showcase", component: Showcase },
       { path: "contact", component: Contact },
-      { path: "creative", component: Creative }
-    ]
-  }
+      { path: "creative", component: Creative },
+    ],
+  },
 ];
 
 const router = createRouter({
-  history: createWebHistory(),
-  routes
+  history: createWebHashHistory(), // ✅ REQUIRED for GitHub Pages
+  routes,
 });
 
 /* 🔐 AUTH GUARD */
