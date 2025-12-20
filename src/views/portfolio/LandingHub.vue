@@ -9,7 +9,7 @@
       playsinline
       preload="auto"
     >
-      <source src="/backgrounds/pages-dash-bg.mp4" type="video/mp4" />
+      <source :src="videoBg" type="video/mp4" />
     </video>
 
     <!-- 🌫️ OVERLAY -->
@@ -32,7 +32,7 @@
 
           <!-- 🟢 BUBBLE -->
           <div class="card-circle">
-            <img :src="item.icon" alt="" />
+            <img :src="item.icon" :alt="item.title" />
           </div>
 
           <!-- 📖 DESCRIPTION -->
@@ -49,35 +49,42 @@
 </template>
 
 <script>
+const BASE = import.meta.env.BASE_URL;
+
 export default {
   name: "LandingHub",
   data() {
     return {
       transitioning: false,
+
+      // ✅ GitHub Pages–safe video path
+      videoBg: `${BASE}backgrounds/pages-dash-bg.mp4`,
+
+      // ✅ GitHub Pages–safe icons
       pages: [
         {
           title: "Profile",
           desc: "My personal information, resume, background, and professional overview.",
           route: "/portfolio/dashboard/profile",
-          icon: "/icons/profile.png"
+          icon: `${BASE}icons/profile.png`
         },
         {
           title: "Showcase",
           desc: "My highlighted projects, demos, and featured technical works.",
           route: "/portfolio/dashboard/showcase",
-          icon: "/icons/showcase.png"
+          icon: `${BASE}icons/showcase.png`
         },
         {
           title: "Contact",
           desc: "Ways to connect, reach out, and communicate with me. Leave a message as well.",
           route: "/portfolio/dashboard/contact",
-          icon: "/icons/contact.png"
+          icon: `${BASE}icons/contact.png`
         },
         {
           title: "Creative",
           desc: "The professional tools and skills I possess.",
           route: "/portfolio/dashboard/creative",
-          icon: "/icons/creative.png"
+          icon: `${BASE}icons/creative.png`
         }
       ]
     };
