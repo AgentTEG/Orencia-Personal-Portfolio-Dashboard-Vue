@@ -94,11 +94,18 @@ export default {
         return;
       }
 
+      // 1. Trigger the "Fog" and "Zoom" animations
       this.loginSuccess = true;
+      this.loading = false;
 
+      // 2. Wait for the animation to finish (matching your 0.8s CSS transition)
       setTimeout(() => {
-        this.$router.push("/portfolio");
-      }, 800);
+        this.$router.push("/portfolio").catch((err) => {
+          console.warn("Router push failed, trying fallback...", err);
+          // Fallback if the router is being stubborn in production
+          window.location.href = "/#/portfolio"; 
+        });
+      }, 1000);
     }
   }
 };
