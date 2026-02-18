@@ -1,4 +1,5 @@
 import { createRouter, createWebHashHistory } from "vue-router";
+import { supabase } from "../supabase"; // ✅ Import supabase for the guard
 
 import Login from "../views/Login.vue";
 import Register from "../views/Register.vue";
@@ -39,16 +40,26 @@ const routes = [
 ];
 
 const router = createRouter({
-  history: createWebHashHistory(), // ✅ REQUIRED for GitHub Pages
+  history: createWebHashHistory(), 
   routes,
 });
 
 /* 🔐 AUTH GUARD */
-router.beforeEach((to, from, next) => {
-  if (!to.meta.requiresAuth) return next();
+router.beforeEach(async (to, from, next) => {
+  // 1. If the route doesn't require auth, let them through
+  if (!to.meta.requiresAuth) {
+    return next();
+  }
 
-  const loggedIn = localStorage.getItem("loggedIn");
-  loggedIn === "true" ? next() : next("/login");
+  // 2. Check Supabase for an active session
+  const { data: { session } } = await supabase.auth.getSession();
+
+  // 3. If session exists, proceed. Otherwise, kick to login.
+  if (session) {
+    next();
+  } else {
+    next("/login");
+  }
 });
 
 export default router;
