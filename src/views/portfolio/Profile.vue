@@ -66,7 +66,7 @@
           <p class="place">
             Polytechnic University of the Philippines
           </p>
-          <p class="date">2023 – Present · Approx. GPA: 1.89</p>
+          <p class="date">2023 – 2026 · GPA: 1.89</p>
         </div>
       </div>
     </div>
