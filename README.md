@@ -5,9 +5,11 @@ Welcome to my profesionoal dashboard project!
 # Orencia – Personal Portfolio Dashboard 
 
 🔗 **Live Demo (Netlify):**  
+https://orencia-port-dash.netlify.app/
+
+🔗 **Live Demo (Github Pages):**  
 https://agentteg.github.io/Orencia-Personal-Portfolio-Dashboard-Vue/
 
-https://orencia-port-dash.netlify.app/
 
 A **professional dashboard-style portfolio web application** built with **Vue 3 and Vite**.  
 This project presents personal, professional, and creative information through a modern and interactive dashboard interface.
