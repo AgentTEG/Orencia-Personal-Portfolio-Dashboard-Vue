@@ -27,12 +27,20 @@
     <div class="main-layout">
       <div class="card resume-card">
         <h3>Resume</h3>
-        <img 
-          src="../../assets/resume-full.png" 
-          alt="Resume" 
+        <!-- 
+          WRAPPER DIV: Acts as the clickable "image".
+          The iframe inside is completely frozen by CSS so it looks like a clean picture.
+        -->
+        <div 
+          class="resume-preview-wrapper" 
           @click="showModal = true"
-          style="cursor: zoom-in;" 
-        />
+        >
+          <iframe 
+            :src="resumeUrl" 
+            class="pdf-preview-iframe"
+            tabindex="-1"
+          ></iframe>
+        </div>
       </div>
 
       <div class="side-stack">
@@ -72,10 +80,11 @@
     </div>
 
     <Transition name="fade">
-      <div v-if="showModal" class="modal-overlay" @click="showModal = false">
+      <div v-if="showModal" class="modal-overlay" @click.self="showModal = false">
         <div class="modal-content">
-          <span class="close-btn">&times;</span>
-          <img src="../../assets/resume-full.png" alt="Resume Fullscreen" />
+          <span class="close-btn" @click="showModal = false">&times;</span>
+          <!-- MODAL IFRAME: Kept clean, but allows scrolling if needed -->
+          <iframe :src="resumeUrl" class="modal-pdf-iframe"></iframe>
         </div>
       </div>
     </Transition>
@@ -86,12 +95,14 @@
 export default {
   data() {
     return {
-      // Logic to track if the modal is open
-      showModal: false
+      showModal: false,
+      // Grabs the PDF from your public folder and strips away the browser toolbars
+      resumeUrl: `${import.meta.env.BASE_URL}resume.pdf#toolbar=0&navpanes=0&scrollbar=0&view=FitH`
     };
   }
 };
 </script>
+
 <style scoped>
 /* PAGE BACKGROUND */
 .page-bg {
@@ -204,19 +215,42 @@ hr {
   border-top: 1px solid rgba(255, 255, 255, 0.15);
 }
 
-/* RESUME IMAGE IN CARD */
-.resume-card img {
+/* =========================================
+   PDF PREVIEW TRICK STYLES (BRUTE FORCE CROP)
+   ========================================= */
+
+/* The wrapper handles the borders, rounded corners, and hover effects */
+.resume-preview-wrapper {
+  position: relative;
   width: 100%;
+  aspect-ratio: 8.5 / 11; /* Forces perfect paper dimensions */
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.1);
+  overflow: hidden; /* CRITICAL: Acts as the cropping boundary layer */
+  cursor: zoom-in;
   transition: opacity 0.3s ease;
+  background-color: #ffffff; /* Ensures the background behind text is white */
 }
 
-.resume-card img:hover {
+.resume-preview-wrapper:hover {
   opacity: 0.8; /* Subtle hint that it's clickable */
 }
 
-/* FULLSCREEN MODAL OVERLAY */
+/* The iframe is oversized and shifted up/left to hide the browser's native dark margins */
+.pdf-preview-iframe {
+  position: absolute;
+  top: -2%; 
+  left: -2%;
+  width: 104%; 
+  height: 104%;
+  border: none;
+  pointer-events: none; /* Stops the user from interacting with the PDF UI */
+}
+
+/* =========================================
+   FULLSCREEN MODAL STYLES
+   ========================================= */
+
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -228,40 +262,40 @@ hr {
   justify-content: center;
   align-items: center;
   z-index: 10000; /* High z-index to cover everything */
-  cursor: zoom-out;
   padding: 20px;
   backdrop-filter: blur(5px); /* Blurs the profile page behind the resume */
 }
 
-/* MODAL CONTENT CONTAINER */
 .modal-content {
   position: relative;
-  max-width: 95%;
-  max-height: 95vh;
+  width: 100%;
+  max-width: 1000px;
+  height: 90vh;
   display: flex;
   justify-content: center;
 }
 
-.modal-content img {
-  width: auto;
-  height: auto;
-  max-width: 100%;
-  max-height: 90vh; /* Ensures it doesn't bleed off the screen */
+/* The large PDF viewer inside the modal */
+.modal-pdf-iframe {
+  width: 100%;
+  height: 100%;
   border-radius: 8px;
   box-shadow: 0 0 50px rgba(0, 0, 0, 0.8);
   border: 1px solid rgba(255, 255, 255, 0.2);
+  background-color: #ffffff;
 }
 
 /* CLOSE BUTTON (X) */
 .close-btn {
   position: absolute;
-  top: -50px;
+  top: -40px;
   right: 0;
   color: #9acd66; /* Matching your theme green */
   font-size: 50px;
   line-height: 1;
   cursor: pointer;
   transition: transform 0.2s ease;
+  z-index: 10001;
 }
 
 .close-btn:hover {
@@ -278,6 +312,7 @@ hr {
 .fade-leave-to {
   opacity: 0;
 }
+
 /* RESPONSIVE */
 @media (max-width: 1100px) {
   .main-layout {
