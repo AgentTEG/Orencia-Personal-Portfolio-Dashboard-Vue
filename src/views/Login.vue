@@ -1,6 +1,5 @@
 <template>
   <div class="auth-wrapper">
-    <!-- 🎥 BACKGROUND VIDEO -->
     <video
       class="bg-video"
       autoplay
@@ -12,16 +11,13 @@
       <source src="/backgrounds/login-bg.mp4" type="video/mp4" />
     </video>
 
-    <!-- 🌫️ DARK OVERLAY -->
     <div class="overlay"></div>
 
-    <!-- 🌁 FOG TRANSITION -->
     <div
       class="fog-transition"
       :class="{ active: loginSuccess }"
     ></div>
 
-    <!-- 🧱 LOGIN CARD -->
     <div
       class="auth-card"
       :class="{
@@ -30,7 +26,7 @@
       }"
     >
       <h1>Welcome to my Portfolio Dashboard</h1>
-      <p class="subtitle"</p>
+      <p class="subtitle"></p>
 
       <form @submit.prevent="login">
         <input v-model="email" placeholder="Email" required />
@@ -50,10 +46,13 @@
         </button>
       </form>
 
+      <button class="guest-btn" :disabled="loading" @click="loginAsGuest">
+        Continue as Guest
+      </button>
+
       <p class="link" @click="$router.push('/register')">
           Don’t have an account? Register
       </p>
-
 
       <p v-if="error" class="error">{{ error }}</p>
     </div>
@@ -79,6 +78,24 @@ export default {
       this.showPassword = !this.showPassword;
     },
 
+    // ✅ NEW: Bypasses Supabase completely but keeps your animations intact
+    loginAsGuest() {
+      this.error = "";
+      this.loading = true;
+
+      // 1. Trigger the cinematic transition animations
+      this.loginSuccess = true;
+      this.loading = false;
+
+      // 2. Redirect to portfolio after animation completes
+      setTimeout(() => {
+        this.$router.push("/portfolio").catch((err) => {
+          console.warn("Router push failed, trying fallback...", err);
+          window.location.href = "/#/portfolio"; 
+        });
+      }, 1000);
+    },
+
     async login() {
       this.error = "";
       this.loading = true;
@@ -94,15 +111,15 @@ export default {
         return;
       }
 
-      // 1. Trigger the "Fog" and "Zoom" animations
+      // Mark local storage so the navbar knows to display the "Logout" button
+      localStorage.setItem("user_logged_in", "true");
+
       this.loginSuccess = true;
       this.loading = false;
 
-      // 2. Wait for the animation to finish (matching your 0.8s CSS transition)
       setTimeout(() => {
         this.$router.push("/portfolio").catch((err) => {
           console.warn("Router push failed, trying fallback...", err);
-          // Fallback if the router is being stubborn in production
           window.location.href = "/#/portfolio"; 
         });
       }, 1000);
@@ -111,13 +128,12 @@ export default {
 };
 </script>
 
-
 <style scoped>
 /* ===== WRAPPER ===== */
 .auth-wrapper {
   position: relative;
   min-height: 100vh;
-  overflow-y: auto; /* ✅ SCROLL FIX */
+  overflow-y: auto;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -242,7 +258,7 @@ input::placeholder {
   color: #9ca3af;
 }
 
-/* ===== BUTTON ===== */
+/* ===== BUTTONS ===== */
 button {
   width: 100%;
   padding: 14px;
@@ -252,6 +268,21 @@ button {
   border-radius: 10px;
   cursor: pointer;
   font-weight: bold;
+  margin-bottom: 12px;
+}
+
+/* ✅ NEW: Guest button design styling */
+.guest-btn {
+  background: transparent;
+  border: 2px solid #658a43;
+  color: #8fd46a;
+  margin-top: 4px;
+  transition: background 0.2s, color 0.2s;
+}
+
+.guest-btn:hover {
+  background: #658a43;
+  color: white;
 }
 
 /* ===== LINK ===== */
@@ -259,6 +290,7 @@ button {
   display: inline-block;
   margin-top: 20px;
   color: #8fd46a;
+  cursor: pointer;
 }
 
 /* ===== ERROR ===== */

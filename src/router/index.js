@@ -1,5 +1,5 @@
 import { createRouter, createWebHashHistory } from "vue-router";
-import { supabase } from "../supabase"; // ✅ Import supabase for the guard
+import { supabase } from "../supabase";
 
 import Login from "../views/Login.vue";
 import Register from "../views/Register.vue";
@@ -13,27 +13,26 @@ import Contact from "../views/portfolio/Contact.vue";
 import Creative from "../views/portfolio/Creative.vue";
 
 const routes = [
-  { path: "/", redirect: "/login" },
+  // ✅ 1. Redirect root directly to your Landing Hub
+  { path: "/", redirect: "/portfolio" },
 
   { path: "/login", component: Login },
   { path: "/register", component: Register },
 
-  /* 🎬 LANDING SELECTOR */
+  /* 🎬 LANDING SELECTOR (Public) */
   {
     path: "/portfolio",
     component: LandingHub,
-    meta: { requiresAuth: true },
   },
 
-  /* 📊 DASHBOARD */
+  /* 📊 DASHBOARD (Public) */
   {
     path: "/portfolio/dashboard",
     component: DashboardLayout,
-    meta: { requiresAuth: true },
     children: [
       { path: "profile", component: Profile },
       { path: "showcase", component: Showcase },
-      { path: "contact", component: Contact },
+      { path: "contact", component: Contact }, // Contact is now fully public
       { path: "creative", component: Creative },
     ],
   },
@@ -46,15 +45,14 @@ const router = createRouter({
 
 /* 🔐 AUTH GUARD */
 router.beforeEach(async (to, from, next) => {
-  // 1. If the route doesn't require auth, let them through
+  // If the route doesn't have meta: { requiresAuth: true }, let them through immediately
   if (!to.meta.requiresAuth) {
     return next();
   }
 
-  // 2. Check Supabase for an active session
+  // Otherwise, verify session
   const { data: { session } } = await supabase.auth.getSession();
 
-  // 3. If session exists, proceed. Otherwise, kick to login.
   if (session) {
     next();
   } else {

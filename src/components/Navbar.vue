@@ -1,21 +1,35 @@
 <template>
   <header class="navbar">
-    <!-- ☰ GO TO LANDING HUB -->
     <button class="menu-btn" @click="goToHub">
       ☰
     </button>
 
     <h1>Alfred Joaquin L. Orencia</h1>
 
-    <button class="logout" @click="logout">Logout</button>
+    <button v-if="isLoggedIn" class="logout" @click="logout">Logout</button>
+    
+    <button v-if="!isLoggedIn" class="logout login-btn" @click="goToLogin">Login</button>
   </header>
 </template>
 
 <script>
 export default {
+  data() {
+    return {
+      isLoggedIn: false
+    };
+  },
+  mounted() {
+    // Check if the user is logged in when the navbar loads
+    this.isLoggedIn = !!localStorage.getItem("user_logged_in");
+  },
   methods: {
     goToHub() {
       this.$router.push("/portfolio");
+    },
+    
+    goToLogin() {
+      this.$router.push("/login");
     },
 
     async logout() {
@@ -30,7 +44,9 @@ export default {
       } catch (err) {
         console.error("Logout failed", err);
       } finally {
+        // Clear local storage and update UI state
         localStorage.removeItem("user_logged_in");
+        this.isLoggedIn = false;
         this.$router.push("/login");
       }
     }
@@ -76,5 +92,10 @@ h1 {
   border-radius: 8px;
   cursor: pointer;
   font-weight: bold;
+}
+
+.login-btn {
+  background: #1f2933; /* Darker background to separate it from logout */
+  color: white;
 }
 </style>
